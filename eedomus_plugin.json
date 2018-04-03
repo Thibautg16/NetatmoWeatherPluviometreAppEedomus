@@ -1,0 +1,162 @@
+{
+    "plugin_id": "netatmopluv",
+    "name_fr": "Pluviomètre Netatmo",
+    "name_en": "Netatmo Rain Gauge",
+    "icon": "netatmo_pluv.png",
+    "version": "1.0",
+    "creation_date": "2018-01-17",
+    "modification_date": "2018-04-03",
+    "author": "<a href='https://twitter.com/Thibautg16' target='_blank'>@Thibautg16</a> / <a href='https://github.com/Thibautg16/NetatmoWeatherPluviometreAppEedomus' target='_blank'> GitHub </a>",
+    "description_fr": "Ajouter un module <a href='https://www.netatmo.com/fr-FR/product/weather/weatherstation/accessories#raingauge' target='_blank'>Pluviomètre</a> Netatmo à votre station Netatmo depuis votre box Eedomus.<br/>Application personnalisable, vous pouvez choisir d'installer ou non les différents canaux",
+    "description_en": "Add an Netatmo<a href='https://www.netatmo.com/en-GB/product/weather/weatherstation/accessories#raingauge' target='_blank'>Rain Gauge</a> to your Netatmo weather station from your Eedomus box.<br/>Customizable application, you can choose to install or not the different channels",
+    "forum_link": "",
+    "parameters":
+        [
+            {
+                "parameter": "configuration",
+                "description": "--------- Configuration ----------",
+                "xtype": "textfield",
+                "field": "allowBlank: true, width: 0, style: 'visibility:hidden;'"
+            },
+            {
+                "parameter": "parent_netatmo", 
+                "description": "Station Météo :",
+                "xtype": "combo",
+                "field": "store : getCombo('/json/list_all.php?value_type=float&filter_unit=°C&sensor_only=1&main_only=1'), displayField: 'label', valueField: 'id', triggerAction: 'all', selectOnFocus: true, editable: false, shadow:true, mode: 'local', width: 250, listWidth: 300, allowBlank: true"
+            },  
+            {
+                "parameter": "xpath",
+                "description": "XPATH :",
+                "xtype": "textfield",
+                "default_value": "/netatmo/external",
+                "field": "width:250, allowBlank:false"
+            },    
+            {
+                "parameter": "choix_canaux_vide",
+                "description": "",
+                "xtype": "textfield",
+                "field": "allowBlank: true, width: 0, style: 'visibility:hidden;'"
+            },
+            {
+                "parameter": "choix_canaux",
+                "description": "--------- Choix des canaux ----------",
+                "xtype": "textfield",
+                "field": "allowBlank: true, width: 0, style: 'visibility:hidden;'"
+            },                               
+            {
+                "parameter": "box_pluviometrie",
+                "description": "Pluviomètre - Pluviometrie :",
+                "xtype": "checkbox",
+                "field": "style: 'margin-top: 6px;', checked: true"
+            },
+            {
+                "parameter": "box_pluviometrie_jour",
+                "description": "Pluviomètre - Pluviometrie jour :",
+                "xtype": "checkbox",
+                "field": "style: 'margin-top: 6px;', checked: true"
+            },
+            {
+                "parameter": "box_pluviometrie_batt",
+                "description": "Pluviomètre - Batterie :",
+                "xtype": "checkbox",
+                "field": "style: 'margin-top: 6px;', checked: false"
+            },
+            {
+                "parameter": "box_pluviometrie_rf",
+                "description": "Pluviomètre - Signal radio :",
+                "xtype": "checkbox",
+                "field": "style: 'margin-top: 6px;', checked: false"
+            }                                                       
+        ],      
+    "devices":
+        [
+            {
+                "device_id": "pluviometrie",
+                "create":"plugin.parameters.box_pluviometrie",
+                "parent_id": "plugin.parameters.parent_netatmo",
+                "module_id": "51",
+                "icon": "netatmo_pluv.png",
+                "type": "http",
+                "name_fr": "plugin.name - Pluviometrie",
+                "utilisation_id":"35",
+                "value_unit": "mm/h",
+                "parameters":
+                    {
+                        "VAR1": "plugin.parameters.oauth_code",  
+                        "VAR2": "plugin.parameters.station_mac", 
+                        "value_type": "float",
+                        "ignore_errors": 3,
+                        "RAW_URL": "http://localhost/script/?exec=netatmo_oauth.php&oauth_code=[VAR1]&device_id=[VAR2]",
+                        "RAW_XPATH": "plugin.parameters.xpath/rain1",
+                        "POLLING": "5"
+                    }     
+            },
+            {
+                "device_id": "pluviometrie_jour",
+                "create":"plugin.parameters.box_pluviometrie_jour",
+                "parent_id": "plugin.parameters.parent_netatmo",
+                "module_id": "51",
+                "icon": "netatmo_pluv.png",
+                "type": "http",
+                "name_fr": "plugin.name - Pluviometrie Jour",
+                "utilisation_id":"35",
+                "value_unit": "mm/j",
+                "parameters":
+                    {
+                        "VAR1": "plugin.parameters.oauth_code",  
+                        "VAR2": "plugin.parameters.station_mac", 
+                        "value_type": "float",
+                        "ignore_errors": 3,
+                        "RAW_URL": "http://localhost/script/?exec=netatmo_oauth.php&oauth_code=[VAR1]&device_id=[VAR2]",
+                        "RAW_XPATH": "plugin.parameters.xpath/rain24",
+                        "POLLING": "5"
+                    }     
+            },
+            {
+                "device_id": "pluviometrie_batt",
+                "create":"plugin.parameters.box_pluviometrie_batt",
+                "parent_id": "plugin.parameters.parent_netatmo",
+                "module_id": "51",
+                "icon": "Batterie.png",
+                "type": "http",
+                "name_fr": "plugin.name - Pluviomètre Batt.",
+                "utilisation_id":"35",
+                "value_unit": "%",
+                "parameters":
+                    {
+                        "VAR1": "plugin.parameters.oauth_code",  
+                        "VAR2": "plugin.parameters.station_mac", 
+                        "value_type": "float",
+                        "ignore_errors": 3,
+                        "RAW_URL": "http://localhost/script/?exec=netatmo_oauth.php&oauth_code=[VAR1]&device_id=[VAR2]",
+                        "RAW_XPATH": "plugin.parameters.xpath/battery_percent",
+                        "POLLING": "5"
+                    }     
+            },
+            {
+                "device_id": "pluviometrie_rf",
+                "create":"plugin.parameters.box_pluviometrie_rf",
+                "module_id": "51",
+                "parent_id": "plugin.parameters.parent_netatmo",
+                "type": "http",
+                "name_fr": "plugin.name - Pluviomètre RF",
+                "utilisation_id":"35",
+                "parameters":
+                    {
+                        "VAR1": "plugin.parameters.oauth_code",
+                        "VAR2": "plugin.parameters.station_mac", 
+                        "value_type": "list",
+                        "ignore_errors": 3,
+                        "RAW_URL": "http://localhost/script/?exec=netatmo_oauth.php&oauth_code=[VAR1]&device_id=[VAR2]",
+                        "RAW_XPATH": "plugin.parameters.xpath/rf_status",
+                        "POLLING": "5"
+                    },
+                "values":
+                    [
+                        { "value": "0", "icon": "meteo_max.png", "description": "Bon"},
+                        { "value": "1", "icon": "meteo_moy.png", "description": "Moyen"},
+                        { "value": "2", "icon": "meteo_min.png", "description": "Faible"}
+                    ]        
+            }                      
+        ]
+}
